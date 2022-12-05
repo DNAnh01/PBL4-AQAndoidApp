@@ -2,11 +2,13 @@ package com.dnanh.pbl4_aqandoidapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.dnanh.pbl4_aqandoidapp.adapters.UsersAdapter;
 import com.dnanh.pbl4_aqandoidapp.databinding.ActivityUsersBinding;
+import com.dnanh.pbl4_aqandoidapp.listeners.UserListener;
 import com.dnanh.pbl4_aqandoidapp.models.User;
 import com.dnanh.pbl4_aqandoidapp.utilities.Constants;
 import com.dnanh.pbl4_aqandoidapp.utilities.PreferenceManager;
@@ -16,7 +18,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersActivity extends AppCompatActivity {
+public class UsersActivity extends AppCompatActivity implements UserListener {
 
     private ActivityUsersBinding binding;
     private PreferenceManager preferenceManager;
@@ -57,7 +59,8 @@ public class UsersActivity extends AppCompatActivity {
                            users.add(user);
                        }
                        if(users.size() > 0) {
-                           UsersAdapter usersAdapter = new UsersAdapter(users);
+                           // this -> impl UserListener
+                           UsersAdapter usersAdapter = new UsersAdapter(users, this);
                            binding.usersRecyclerView.setAdapter(usersAdapter);
                            binding.usersRecyclerView.setVisibility(View.VISIBLE);
                        }else {
@@ -80,5 +83,13 @@ public class UsersActivity extends AppCompatActivity {
         } else {
             binding.progressBar.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onUserClicked(User user) {
+        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+        intent.putExtra(Constants.KEY_USER, user);
+        startActivity(intent);
+        finish();
     }
 }
