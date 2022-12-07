@@ -9,4 +9,5 @@
     <color name="icon_background">#E86B95</color>
     <color name="error">#B00020</color>
     <color name="received_message_background">#3146BA</color>
+    <color name="green">#008000</color>
 </resources>
