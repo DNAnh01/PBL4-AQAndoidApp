@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#C34570</color>
-    <color name="primary_dark">#AE315C</color>
+    <color name="primary">#1DADE6</color>
+    <color name="primary_sent">#487FAC</color>
+    <color name="primary_dark">#1D5683</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#C9AFAF</color>
     <color name="white">#FFFFFF</color>
     <color name="input_background">#ECECEC</color>
-    <color name="icon_background">#E86B95</color>
+    <color name="icon_background">#13568C</color>
     <color name="error">#B00020</color>
     <color name="received_message_background">#3146BA</color>
     <color name="green">#008000</color>
