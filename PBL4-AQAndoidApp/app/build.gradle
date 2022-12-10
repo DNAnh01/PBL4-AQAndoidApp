@@ -42,14 +42,11 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
-    /*
-    SDP - đơn vị kích thước có thể thay đổi quy mô Một thư viện Android cung cấp
-    đơn vị kích thước mới - sdp (scalabte dp). Đơn vị kích thước này tỷ lệ với kích thước màn hình.
-     Nó có thể giúp các nhà phát triển Android hỗ trợ nhiều kích cỡ màn hình.
-    */
-    /*
-    hỗ trợ cho các kích thước màn hình khác nhau
-    */
+
+
+
+    //Scalable Size Unit
+
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
 
@@ -67,7 +64,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-
     implementation 'com.google.code.gson:gson:2.9.0'
+
+    // Swipe Refresh Layout
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
 }

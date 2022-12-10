@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.dnanh.pbl4_aqandoidapp.R;
 import com.dnanh.pbl4_aqandoidapp.activities.ChatActivity;
+import com.dnanh.pbl4_aqandoidapp.activities.IncomingInvitationActivity;
 import com.dnanh.pbl4_aqandoidapp.models.User;
 import com.dnanh.pbl4_aqandoidapp.utilities.Constants;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -72,5 +73,32 @@ public class MessagingService extends FirebaseMessagingService {
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
         notificationManagerCompat.notify(notificationId,builder.build());
+
+        //call
+
+        String type = remoteMessage.getData().get(Constants.REMOTE_MSG_TYPE);
+        if(type != null) {
+            if(type.equals(Constants.REMOTE_MSG_INVITATION)) {
+                Intent intentCall = new Intent(getApplicationContext(), IncomingInvitationActivity.class);
+                intentCall.putExtra(
+                        Constants.REMOTE_MSG_MEETING_TYPE,
+                        remoteMessage.getData().get(Constants.REMOTE_MSG_MEETING_TYPE)
+                );
+                intentCall.putExtra(
+                        Constants.KEY_NAME,
+                        remoteMessage.getData().get(Constants.KEY_NAME)
+                );
+                intentCall.putExtra(
+                        Constants.KEY_EMAIL,
+                        remoteMessage.getData().get(Constants.KEY_EMAIL)
+                );
+                intentCall.putExtra(
+                        Constants.KEY_USER_ID,
+                        remoteMessage.getData().get(Constants.KEY_USER_ID)
+                );
+                intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intentCall);
+            }
+        }
     }
 }

@@ -15,4 +15,6 @@
     <string name="type_a_message">Type a message</string>
     <string name="online">Online</string>
     <string name="aqandroidapp">AQAndroidApp</string>
+    <string name="incoming_meeting_invitation">Incoming Meeting Invitation</string>
+    <string name="sending_meeting_invitation">Sending Meeting Invitation</string>
 </resources>
