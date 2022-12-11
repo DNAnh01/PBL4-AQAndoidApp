@@ -24,9 +24,12 @@ import com.dnanh.pbl4_aqandoidapp.utilities.PreferenceManager;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import org.jitsi.meet.sdk.JitsiMeetActivity;
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,15 +141,31 @@ public class IncomingInvitationActivity extends AppCompatActivity {
 //                        showToast("Invitation sent successfully");
 //                    }
                     if(type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
-                        showToast("Invitation Accepted");
+//                        showToast("Invitation Accepted");
+                        try {
+                            URL serverURL = new URL("https://meet.jit.si");
+                            JitsiMeetConferenceOptions conferenceOptions =
+                                    new JitsiMeetConferenceOptions.Builder()
+                                            .setServerURL(serverURL)
+                                            .setWelcomePageEnabled(false)
+                                            .setRoom(getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM))
+                                            .build();
+
+                            JitsiMeetActivity.launch(IncomingInvitationActivity.this,conferenceOptions);
+                            finish();
+                        }catch (Exception exception) {
+                            showToast(exception.getMessage().toString());
+                            finish();
+                        }
+
                     }else {
                         showToast("Invitation Rejected");
+                        finish();
                     }
                 }else {
                     showToast(response.message().toString());
-                    //finish();
+                    finish();
                 }
-                finish();
             }
 
             @Override

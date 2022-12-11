@@ -1,3 +1,3 @@
 # PBL4-AQAndoidApp
-Demo chat
+Cuộc họp video bằng Jitsi Meet
 

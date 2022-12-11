@@ -1,4 +1,8 @@
 buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
     dependencies {
         classpath 'com.google.gms:google-services:4.3.10'
     }
@@ -7,4 +11,17 @@ plugins {
     id 'com.android.application' version '7.3.1' apply false
     id 'com.android.library' version '7.3.1' apply false
 }
-
+allprojects {
+    buildDir = "${rootProject.rootDir}/build/${project.name}"
+    repositories {
+        maven {
+            url "https://github.com/jitsi/jitsi-maven-repository/raw/master/releases"
+        }
+        google()
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
+    }
+}
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
