@@ -9,6 +9,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.dnanh.pbl4_aqandoidapp.R;
 import com.dnanh.pbl4_aqandoidapp.activities.ChatActivity;
@@ -96,8 +97,23 @@ public class MessagingService extends FirebaseMessagingService {
                         Constants.KEY_USER_ID,
                         remoteMessage.getData().get(Constants.KEY_USER_ID)
                 );
+                intentCall.putExtra(
+                        Constants.REMOTE_MSG_INVITER_TOKEN,
+                        remoteMessage.getData().get(Constants.REMOTE_MSG_INVITER_TOKEN)
+                );
                 intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intentCall);
+            } else if (type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE)){
+//                để gửi lại các hành động chấp nhận từ chối hủy cho người dùng đối diện.
+//                Tại đây, các hành động chấp nhận và từ chối sẽ gửi lại cho người gửi để thông báo
+//                cho người gửi về việc người nhận đã chấp nhận hoặc từ chối lời mời
+//                và hành động hủy sẽ được gửi đến người nhận để hủy cuộc gọi
+                Intent intentAcceptRejectCancel = new Intent(Constants.REMOTE_MSG_INVITATION_RESPONSE);
+                intentAcceptRejectCancel.putExtra(
+                        Constants.REMOTE_MSG_INVITATION_RESPONSE,
+                        remoteMessage.getData().get(Constants.REMOTE_MSG_INVITATION_RESPONSE)
+                );
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intentAcceptRejectCancel);
             }
         }
     }

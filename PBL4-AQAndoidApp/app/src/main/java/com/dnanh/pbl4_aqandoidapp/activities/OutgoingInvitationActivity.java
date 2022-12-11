@@ -1,5 +1,9 @@
 package com.dnanh.pbl4_aqandoidapp.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -8,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.dnanh.pbl4_aqandoidapp.R;
 import com.dnanh.pbl4_aqandoidapp.databinding.ActivityOutgoingInvitationBinding;
@@ -38,14 +43,7 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityOutgoingInvitationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setListeners();
-        init();
 
-
-
-    }
-
-    private void init() {
         preferenceManager = new PreferenceManager(getApplicationContext());
         //database = FirebaseFirestore.getInstance();
 
@@ -65,13 +63,20 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
             binding.textName.setText(user.name);
             binding.textEmail.setText(user.email);
         }
-        if(meetingType != null && user != null) {
-            initiateMeeting(meetingType,user.token);
-        }
-    }
 
-    private void setListeners() {
-        binding.imageStopInvitation.setOnClickListener(v -> onBackPressed());
+
+        binding.imageStopInvitation.setOnClickListener(v -> {
+            if(user != null) {
+                cancelInvitation(user.token);
+            }
+        });
+
+        if(!(preferenceManager.getString(Constants.KEY_FCM_TOKEN).isEmpty())) {
+
+            if(meetingType != null && user != null) {
+                initiateMeeting(meetingType,user.token);
+            }
+        }
     }
 
 //    private void addCall(HashMap<String, Object> call) {
@@ -80,7 +85,7 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
 
 
     private void showToast(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(OutgoingInvitationActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void initiateMeeting(String meetingType, String receiverToken) {
@@ -108,6 +113,7 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
             data.put(Constants.KEY_EMAIL, preferenceManager.getString(Constants.KEY_EMAIL));
             data.put(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
             data.put(Constants.KEY_FCM_TOKEN, preferenceManager.getString(Constants.KEY_FCM_TOKEN));
+            data.put(Constants.REMOTE_MSG_INVITER_TOKEN, preferenceManager.getString(Constants.KEY_FCM_TOKEN));
 
             body.put(Constants.REMOTE_MSG_DATA,data);
             body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
@@ -130,6 +136,9 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
                 if(response.isSuccessful()) {
                     if(type.equals(Constants.REMOTE_MSG_INVITATION)) {
                         showToast("Invitation sent successfully");
+                    } else if (type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE)) {
+                        showToast("Invitation Cancelled");
+                        finish();
                     }
                 }else {
                     showToast(response.message().toString());
@@ -155,4 +164,57 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
         }
     }
 
+    private void cancelInvitation(String receiverToken) {
+        try {
+            JSONArray tokens = new JSONArray();
+            tokens.put(receiverToken);
+
+            JSONObject body = new JSONObject();
+            JSONObject data = new JSONObject();
+
+            data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_INVITATION_RESPONSE);
+            data.put(Constants.REMOTE_MSG_INVITATION_RESPONSE, Constants.REMOTE_MSG_INVITATION_CANCELLED);
+
+            body.put(Constants.REMOTE_MSG_DATA,data);
+            body.put(Constants.REMOTE_MSG_REGISTRATION_IDS,tokens);
+
+            sendRemoteMessage(body.toString(), Constants.REMOTE_MSG_INVITATION_RESPONSE);
+
+        }catch (Exception exception) {
+            showToast(exception.getMessage());
+            finish();
+        }
+    }
+
+    private BroadcastReceiver invitationResponseReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra(Constants.REMOTE_MSG_INVITATION_RESPONSE);
+            if(type != null) {
+                if (type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
+                    showToast("Invitation Accepted");
+                }else if(type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED)) {
+                    showToast("Invitation Rejected");
+                    finish();
+                }
+            }
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(
+                invitationResponseReceiver,
+                new IntentFilter(Constants.REMOTE_MSG_INVITATION_RESPONSE)
+        );
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(
+                invitationResponseReceiver
+        );
+    }
 }
