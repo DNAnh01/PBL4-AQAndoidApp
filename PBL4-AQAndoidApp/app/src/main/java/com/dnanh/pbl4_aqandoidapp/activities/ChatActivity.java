@@ -3,12 +3,17 @@ package com.dnanh.pbl4_aqandoidapp.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import com.dnanh.pbl4_aqandoidapp.adapters.ChatAdapter;
 import com.dnanh.pbl4_aqandoidapp.databinding.ActivityChatBinding;
@@ -55,6 +60,10 @@ public class ChatActivity extends BaseActivity implements AudioMeetingAndVideoMe
     private String conversionId = null;
     private Boolean isReceiverAvailable = false;
 
+    // vô hiệu hóa tối ưu hóa pin
+    private int REQUEST_CODE_BATTERY_OPTIMIZATIONS = 1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +73,7 @@ public class ChatActivity extends BaseActivity implements AudioMeetingAndVideoMe
         loadReceiverDetails();
         init();
         listenMessages();
+        checkForBatteryOptimizations();
     }
 
     private void init() {
@@ -239,7 +249,11 @@ public class ChatActivity extends BaseActivity implements AudioMeetingAndVideoMe
 
             ).show();
         } else {
-            Toast.makeText(this, "Audio meeting with " + user.name, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Audio meeting with " + user.name, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(),OutgoingInvitationActivity.class);
+            intent.putExtra("user",user);
+            intent.putExtra("type","audio");
+            startActivity(intent);
         }
     }
 
@@ -303,5 +317,30 @@ public class ChatActivity extends BaseActivity implements AudioMeetingAndVideoMe
     protected void onResume() {
         super.onResume();
         listenAvailabilityOfReceiver();
+    }
+
+    private void checkForBatteryOptimizations() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            if(!powerManager.isIgnoringBatteryOptimizations(getPackageName())) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+                builder.setTitle("Warning");
+                builder.setMessage("Battery optimizations is enabled. It can interrupt running background services.");
+                builder.setPositiveButton("Disable", (dialogInterface, i) -> {
+                    Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                    startActivityForResult(intent,REQUEST_CODE_BATTERY_OPTIMIZATIONS);
+                    });
+                builder.setNegativeButton("Cancel", (dialog, i) -> dialog.dismiss());
+                builder.create().show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_BATTERY_OPTIMIZATIONS) {
+            checkForBatteryOptimizations();
+        }
     }
 }

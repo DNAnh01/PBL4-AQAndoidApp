@@ -8,6 +8,7 @@
     android:overScrollMode="never"
     android:padding="@dimen/_24sdp"
     android:scrollbars="none"
+    android:background="@drawable/background_create_new_account"
     tools:context=".activities.SignUpActivity">
 
     <LinearLayout
@@ -21,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
             android:text="@string/create_new_account"
-            android:textColor="@color/primary_text"
+            android:textColor="@color/white"
             android:textSize="@dimen/_18ssp"
             android:textStyle="bold"/>
         
@@ -137,7 +138,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:text="@string/sign_in"
-            android:textColor="@color/primary"
+            android:textColor="@color/white"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold" />
 

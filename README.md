@@ -1,3 +1,4 @@
 # PBL4-AQAndoidApp
-Cuộc họp video bằng Jitsi Meet
+release chat call
+TODO: share file using firebase 
 

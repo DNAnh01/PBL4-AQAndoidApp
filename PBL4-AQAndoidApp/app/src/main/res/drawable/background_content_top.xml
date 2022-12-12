@@ -4,4 +4,8 @@
     <solid android:color="@color/white"/>
     <corners android:bottomLeftRadius="@dimen/_17sdp"
         android:bottomRightRadius="@dimen/_17sdp"/>
+    <gradient
+        android:angle="270"
+        android:endColor="@color/colorChatEnd"
+        android:startColor="@color/colorChatStart"/>
 </shape>
