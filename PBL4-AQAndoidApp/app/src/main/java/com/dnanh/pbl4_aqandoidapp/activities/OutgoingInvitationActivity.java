@@ -123,7 +123,7 @@ public class OutgoingInvitationActivity extends AppCompatActivity {
             data.put(Constants.KEY_EMAIL, preferenceManager.getString(Constants.KEY_EMAIL));
             data.put(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID));
             data.put(Constants.KEY_FCM_TOKEN, preferenceManager.getString(Constants.KEY_FCM_TOKEN));
-            data.put(Constants.REMOTE_MSG_INVITER_TOKEN, preferenceManager.getString(Constants.KEY_FCM_TOKEN)); // hơi non
+            data.put(Constants.REMOTE_MSG_INVITER_TOKEN, preferenceManager.getString(Constants.KEY_FCM_TOKEN));
 
             meetingRoom =
                     preferenceManager.getString(Constants.KEY_USER_ID) + "_" +

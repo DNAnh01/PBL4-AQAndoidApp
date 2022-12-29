@@ -1,28 +1,21 @@
 package com.dnanh.pbl4_aqandoidapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
-import com.dnanh.pbl4_aqandoidapp.R;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.dnanh.pbl4_aqandoidapp.databinding.ActivitySignInBinding;
 import com.dnanh.pbl4_aqandoidapp.utilities.Constants;
 import com.dnanh.pbl4_aqandoidapp.utilities.PreferenceManager;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-
 public class SignInActivity extends AppCompatActivity {
 
-
-    /*
-    bật chế độ xemBinding cho dự, lớp liên kết cho từng bố cục XML sẽ được tạo tự động
-    */
     private ActivitySignInBinding binding;
     private PreferenceManager preferenceManager;
 
